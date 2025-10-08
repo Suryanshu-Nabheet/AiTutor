@@ -20,11 +20,15 @@ export function ChatArea({ messages, isLoading, onSpeak, isSpeaking, onStopSpeak
   }, [messages, isLoading]);
 
   if (messages.length === 0 && !isLoading) {
-    return <WelcomeScreen />;
+    return (
+      <div className="h-full">  {/* Simplified: h-full for static full-screen centering; removed overflow/p-0 (unneeded for WelcomeScreen) */}
+        <WelcomeScreen />
+      </div>
+    );
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8 overscroll-behavior-contain custom-scrollbar scroll-smooth">
+    <div className="flex-1 overflow-y-auto pt-3 pb-0 px-3 sm:pt-4 sm:pb-0 sm:px-4 md:pt-6 md:pb-0 md:px-6 lg:pt-8 lg:pb-0 lg:px-8 overscroll-behavior-contain custom-scrollbar scroll-smooth">
       <div className="max-w-3xl xl:max-w-4xl mx-auto space-y-4 sm:space-y-5 md:space-y-6">
         {messages.map((message) => (
           <MessageBubble

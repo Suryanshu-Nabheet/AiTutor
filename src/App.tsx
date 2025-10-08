@@ -146,33 +146,19 @@ function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="border-b border-gray-800/50 bg-black/40 backdrop-blur-xl sticky top-0 z-30">
-          <div className="flex items-center justify-between p-3 sm:p-4 md:p-5">
-            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 pl-12 lg:pl-0">
-              <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-blue-600 to-blue-500 rounded-lg shadow-lg shadow-blue-600/30 flex-shrink-0">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h1 className="text-sm sm:text-base md:text-lg font-semibold text-white truncate">
-                  AiTutor
-                </h1>
-                <p className="text-[10px] sm:text-xs text-gray-500 truncate">Dual AI Learning Assistant</p>
-              </div>
-            </div>
-          </div>
+        {/* ChatArea: flex-1 for full height, no extra wrappers */}
+        <div className="flex-1 overflow-hidden">
+          <ChatArea
+            messages={currentConversation?.messages || []}
+            isLoading={isLoading}
+            onSpeak={handleSpeak}
+            isSpeaking={isSpeaking}
+            onStopSpeaking={handleStopSpeaking}
+          />
         </div>
 
-        <ChatArea
-          messages={currentConversation?.messages || []}
-          isLoading={isLoading}
-          onSpeak={handleSpeak}
-          isSpeaking={isSpeaking}
-          onStopSpeaking={handleStopSpeaking}
-        />
-
-        <div className="border-t border-gray-800/50 p-3 sm:p-4 bg-black/40 backdrop-blur-xl">
+        {/* InputArea wrapper: No border-t/line, minimal padding, no bg for seamless merge */}
+        <div className="p-2 sm:p-3">  {/* Removed border-t border-gray-800/50 and bg-black/40 backdrop-blur-xl: no line/gap */}
           <div className="max-w-3xl mx-auto">
             <InputArea
               onSendMessage={handleSendMessage}

@@ -1,4 +1,4 @@
-import { Code2, GraduationCap, Sparkles, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onStartNewChat: () => void;
@@ -6,7 +6,7 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ onStartNewChat }: WelcomeScreenProps) {
   return (
-    <div className="flex flex-col items-center justify-center flex-1 px-4 text-center space-y-6 bg-gray-900/20">
+    <div className="flex flex-col items-center justify-center h-full px-4 text-center space-y-6">  {/* Added h-full: explicit full-height for static centering; no bg/padding interference */}
       {/* Centered icon */}
       <div className="w-20 h-20 bg-blue-500/10 rounded-2xl flex items-center justify-center">
         <MessageCircle className="w-10 h-10 text-blue-400" />
@@ -19,7 +19,6 @@ export function WelcomeScreen({ onStartNewChat }: WelcomeScreenProps) {
           Hello! Ready to dive into learning? Ask me anything.
         </p>
       </div>
-
     </div>
   );
 }

@@ -1,0 +1,134 @@
+import { Plus, MessageSquare, Trash2, X, Menu } from 'lucide-react';
+import { Conversation } from '../types';
+import { useState } from 'react';
+
+interface SidebarProps {
+  conversations: Conversation[];
+  currentConversationId: string | null;
+  onSelectConversation: (id: string) => void;
+  onNewConversation: () => void;
+  onDeleteConversation: (id: string) => void;
+}
+
+export function Sidebar({
+  conversations,
+  currentConversationId,
+  onSelectConversation,
+  onNewConversation,
+  onDeleteConversation
+}: SidebarProps) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-3 sm:p-4 md:p-6 border-b border-gray-800/50 backdrop-blur-xl">
+        <button
+          onClick={() => {
+            onNewConversation();
+            setIsMobileOpen(false);
+          }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-xl sm:rounded-2xl transition-all duration-300 font-medium shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
+        >
+          <Plus size={20} strokeWidth={2.5} />
+          <span className="text-sm sm:text-base">New Chat</span>
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 custom-scrollbar">
+        {conversations.length === 0 ? (
+          <div className="text-gray-500 text-xs sm:text-sm text-center py-12 px-4">
+            <MessageSquare size={32} className="mx-auto mb-3 opacity-30" />
+            <p className="font-medium">No conversations yet</p>
+            <p className="text-xs mt-1 opacity-60">Start a new chat to begin</p>
+          </div>
+        ) : (
+          conversations.map(conv => (
+            <div
+              key={conv.id}
+              className={`group relative flex items-center gap-3 p-3 sm:p-3.5 rounded-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
+                currentConversationId === conv.id
+                  ? 'bg-gradient-to-r from-blue-600/20 to-blue-500/10 border border-blue-500/50 shadow-lg shadow-blue-500/10'
+                  : 'bg-white/[0.02] hover:bg-white/[0.05] border border-transparent hover:border-gray-700/50'
+              }`}
+              onClick={() => {
+                onSelectConversation(conv.id);
+                setIsMobileOpen(false);
+              }}
+            >
+              <div className={`flex-shrink-0 p-2 rounded-lg transition-colors duration-200 ${
+                currentConversationId === conv.id
+                  ? 'bg-blue-500/20'
+                  : 'bg-gray-800/50 group-hover:bg-gray-800'
+              }`}>
+                <MessageSquare size={16} className={`transition-colors duration-200 ${
+                  currentConversationId === conv.id
+                    ? 'text-blue-400'
+                    : 'text-gray-400 group-hover:text-gray-300'
+                }`} />
+              </div>
+              <span className="flex-1 text-xs sm:text-sm text-gray-200 truncate font-medium">
+                {conv.title}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteConversation(conv.id);
+                }}
+                className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-500/20 rounded-lg transition-all duration-200 flex-shrink-0 touch-manipulation hover:scale-110 active:scale-95"
+                aria-label="Delete conversation"
+              >
+                <Trash2 size={14} className="text-red-400" />
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="p-4 border-t border-gray-800/50 backdrop-blur-xl">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600/10 to-blue-500/5 border border-blue-500/20 rounded-lg">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <span className="text-xs text-gray-400 font-medium">AiTutor v1.0</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      <button
+        onClick={() => setIsMobileOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 sm:p-3 bg-black/80 backdrop-blur-xl border border-gray-800 rounded-xl shadow-2xl hover:bg-gray-900 transition-all duration-300 touch-manipulation"
+        aria-label="Open menu"
+      >
+        <Menu size={18} className="text-gray-300" />
+      </button>
+
+      <div className="hidden lg:flex lg:w-72 xl:w-80 bg-black/40 backdrop-blur-xl border-r border-gray-800/50 flex-col h-full">
+        <SidebarContent />
+      </div>
+
+      {isMobileOpen && (
+        <>
+          <div
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
+            onClick={() => setIsMobileOpen(false)}
+          />
+          <div className="lg:hidden fixed inset-y-0 left-0 w-[80vw] max-w-xs sm:max-w-sm bg-black/95 backdrop-blur-2xl border-r border-gray-800 z-50 flex flex-col animate-slide-in shadow-2xl">
+            <div className="flex items-center justify-between p-4 border-b border-gray-800/50">
+              <h2 className="text-lg font-bold text-white">Conversations</h2>
+              <button
+                onClick={() => setIsMobileOpen(false)}
+                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+              >
+                <X size={20} className="text-gray-400" />
+              </button>
+            </div>
+            <SidebarContent />
+          </div>
+        </>
+      )}
+    </>
+  );
+}

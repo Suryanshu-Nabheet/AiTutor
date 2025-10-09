@@ -13,3 +13,5 @@ export interface Conversation {
   createdAt: number;
   updatedAt: number;
 }
+
+export type AnswerMode = 'short' | 'detailed' | 'visual';

@@ -148,7 +148,12 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-black text-white overflow-hidden max-w-full">
+    <div className="flex h-screen bg-black text-white overflow-hidden max-w-full min-h-screen min-h-dvh">
+      {/* Skip link for accessibility */}
+      <a href="#main-content" className="skip-link sr-only focus:not-sr-only">
+        Skip to main content
+      </a>
+      
       <Sidebar
         conversations={conversations}
         currentConversationId={currentConversation?.id || null}
@@ -158,7 +163,12 @@ function App() {
         onRenameConversation={handleRenameConversation}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 relative max-w-full overflow-hidden">
+      <main 
+        id="main-content"
+        className="flex-1 flex flex-col min-w-0 relative max-w-full overflow-hidden"
+        role="main"
+        aria-label="Chat interface"
+      >
         {/* ChatArea: flex-1 for full height, no extra wrappers */}
         <div className="flex-1 overflow-hidden max-w-full">
           <ChatArea
@@ -170,9 +180,9 @@ function App() {
           />
         </div>
 
-        {/* InputArea wrapper: Responsive padding and safe area handling */}
-        <div className="p-2 xs:p-3 sm:p-4 md:p-6 lg:p-8 safe-area-inset-bottom max-w-full">
-          <div className="max-w-3xl xl:max-w-4xl mx-auto w-full">
+        {/* InputArea wrapper: Enhanced responsive padding and safe area handling */}
+        <div className="p-2 xs:p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 2xl:p-12 safe-area-inset-bottom max-w-full">
+          <div className="max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto w-full">
             <InputArea
               onSendMessage={handleSendMessage}
               onStartListening={handleStartListening}
@@ -185,7 +195,7 @@ function App() {
             />
           </div>
         </div>
-      </div>
+      </main>
 
       {error && <ErrorToast message={error} onClose={() => setError(null)} />}
     </div>

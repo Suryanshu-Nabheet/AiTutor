@@ -14,7 +14,7 @@ VITE_OPENROUTER_API_KEY=your_production_api_key
 VITE_OPENROUTER_API_URL=https://openrouter.ai/api/v1/chat/completions
 VITE_OPENROUTER_MODEL=openai/gpt-oss-20b:free
 VITE_APP_NAME=AiTutor
-VITE_APP_URL=https://your-domain.vercel.app
+VITE_APP_URL=https://aitutorx.vercel.app
 ```
 
 ### Step 2: Build Optimization

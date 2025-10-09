@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Message } from '../types';
 import { User, Volume2, Square, Code2, GraduationCap } from 'lucide-react';
 import { CodeBlock } from './CodeBlock';
+import { StructuredContent } from './StructuredContent';
 import { parseMarkdown } from '../utils/markdown';
 
 interface MessageBubbleProps {
@@ -74,16 +75,19 @@ export function MessageBubble({ message, onSpeak, isSpeaking, onStopSpeaking }: 
         className={`flex-1 min-w-0 max-w-full ${isUser ? 'flex justify-end' : 'flex justify-start'}`}
       >
         <div
-          className={`px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 rounded-xl xs:rounded-2xl sm:rounded-3xl transition-all duration-300 hover:shadow-xl max-w-full overflow-hidden ${
+          className={`px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 rounded-xl xs:rounded-2xl sm:rounded-3xl transition-all duration-300 hover:shadow-xl max-w-full overflow-hidden message-bubble ${
             isUser
               ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-600/20'
               : 'glass-effect text-gray-100 border-blue-500/10 shadow-lg'
           }`}
         >
-          <div className="leading-relaxed text-sm sm:text-base break-words overflow-wrap-anywhere">
+          <div className="leading-relaxed text-sm sm:text-base break-words overflow-wrap-anywhere message-content">
             {parsedContent.map((part, index) => {
               if (part.type === 'code') {
                 return <CodeBlock key={index} code={part.content} language={part.language} />;
+              }
+              if (part.type === 'structure') {
+                return <StructuredContent key={index} content={part.content} />;
               }
               return (
                 <div key={index} className="whitespace-pre-wrap text-gray-100 leading-relaxed">

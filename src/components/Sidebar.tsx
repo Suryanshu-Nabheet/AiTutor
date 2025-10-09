@@ -1,6 +1,6 @@
 import { Plus, MessageSquare, Trash2, X, Menu, Search, MessageCircle, Edit2, Check, X as XIcon } from 'lucide-react';
 import { Conversation } from '../types';
-import { useState } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 
 interface SidebarProps {
   conversations: Conversation[];
@@ -23,18 +23,37 @@ export function Sidebar({
   const [searchTerm, setSearchTerm] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredConversations = conversations.filter(conv =>
-    conv.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredConversations = useMemo(() => 
+    conversations.filter(conv =>
+      conv.title.toLowerCase().includes(searchTerm.toLowerCase())
+    ), [conversations, searchTerm]
   );
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+  const handleSearchInput = useCallback((e: React.FormEvent<HTMLInputElement>) => {
+    const value = (e.target as HTMLInputElement).value;
+    setSearchTerm(value);
+  }, []);
 
-  const clearSearch = () => {
+  const clearSearch = useCallback(() => {
     setSearchTerm('');
-  };
+    // Clear the input value directly
+    if (searchInputRef.current) {
+      searchInputRef.current.value = '';
+    }
+  }, []);
+
+  // Sync input value with state and maintain focus
+  useEffect(() => {
+    if (searchInputRef.current && searchInputRef.current.value !== searchTerm) {
+      const wasFocused = document.activeElement === searchInputRef.current;
+      searchInputRef.current.value = searchTerm;
+      if (wasFocused) {
+        searchInputRef.current.focus();
+      }
+    }
+  }, [searchTerm]);
 
   const handleRename = (id: string, currentTitle: string) => {
     setEditingId(id);
@@ -75,11 +94,15 @@ export function Sidebar({
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
+            key="search-input"
+            ref={searchInputRef}
             type="text"
             placeholder="Search conversations..."
             value={searchTerm}
-            onChange={handleSearchChange}
+            onInput={handleSearchInput}
             className="w-full pl-10 pr-10 py-2.5 bg-black/50 border border-gray-700/50 rounded-xl text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all duration-200"
+            autoComplete="off"
+            spellCheck="false"
           />
           {searchTerm && (
             <button

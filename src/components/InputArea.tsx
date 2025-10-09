@@ -57,7 +57,7 @@ export function InputArea({
   return (
     <form onSubmit={handleSubmit} className="w-full">
       {/* Single curved container - ChatGPT-like: full-width rounded box with subtle glass effect */}
-      <div className="w-full bg-gray-900/50 border border-gray-700/50 rounded-xl xs:rounded-2xl p-2.5 xs:p-3 sm:p-4 focus-within:border-blue-500/50 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200 disabled:opacity-50">
+      <div className="w-full bg-gray-900/50 border border-gray-700/50 rounded-xl xs:rounded-2xl p-2.5 xs:p-3 sm:p-4 transition-all duration-200 disabled:opacity-50">
         <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3">  {/* Inner flex: straight rhythm, no outer boxes */}
           {/* Textarea: Flex-1, no border (blends into container), auto-resize within curve */}
           <textarea
@@ -73,7 +73,7 @@ export function InputArea({
             placeholder="Message AiTutor..."
             disabled={isLoading}
             rows={1}
-            className="flex-1 px-0 py-0 m-0 bg-transparent border-0 outline-none text-gray-100 placeholder-gray-500 text-xs xs:text-sm sm:text-base leading-relaxed resize-none min-h-[40px] xs:min-h-[44px] max-h-[120px]"  // No padding/border: seamless in container; reduced max-h
+            className="flex-1 px-0 py-0 m-0 bg-transparent border-0 outline-none focus:outline-none text-gray-100 placeholder-gray-500 text-xs xs:text-sm sm:text-base leading-relaxed resize-none min-h-[40px] xs:min-h-[44px] max-h-[120px]"  // No padding/border: seamless in container; reduced max-h
             style={{ overflowY: 'auto' }}  // Scroll enabled, hidden via CSS
           />
           

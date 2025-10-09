@@ -16,7 +16,7 @@
   ],
   "author": "Suryanshu Nabheet",
   "license": "MIT",
-  "homepage": "https://aitutor.app",
+  "homepage": "https://aitutorx.vercel.app",
   "repository": {
     "type": "git",
     "url": "https://github.com/suryanshunabheet/aitutor"
@@ -24,10 +24,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "build:analyze": "vite build --mode analyze",
+    "build:production": "NODE_ENV=production vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
     "preview": "vite preview",
+    "deploy": "npm run build:production && vercel --prod",
+    "deploy:preview": "npm run build && vercel",
+    "deploy:perfect": "./deploy.sh",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "deploy": "npm run build && vercel --prod"
+    "test": "echo \"No tests specified\" && exit 0",
+    "clean": "rm -rf dist node_modules/.vite",
+    "preinstall": "npx only-allow npm"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",

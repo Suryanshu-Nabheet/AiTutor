@@ -19,6 +19,22 @@ body {
   overflow: hidden;
   margin: 0;
   padding: 0;
+  /* Enhanced responsive design */
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  width: 100vw;
+  /* Safe area handling for iOS */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  /* Touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  /* Performance optimizations */
+  will-change: auto;
+  transform: translateZ(0);
 }
 
 #root {
@@ -308,12 +324,350 @@ html, body {
   }
 }
 
-/* Message container fixes */
+/* Enhanced text overflow prevention */
 .message-container {
   max-width: 100%;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
+  hyphens: auto;
+  overflow: hidden;
+}
+
+/* Force text to stay within containers */
+.message-bubble {
+  max-width: 100%;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Prevent any content from overflowing */
+.message-content {
+  max-width: 100%;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Enhanced text wrapping for all content */
+p, div, span, pre, code, li, ul, ol {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Specific fixes for structured content */
+.structured-content {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ASCII art and charts overflow handling */
+.ascii-art,
+.chart-content,
+.structured-list {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  word-wrap: break-word;
+}
+
+/* Code block overflow fixes */
+.code-container {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  word-wrap: break-word;
+}
+
+/* Mobile-specific overflow fixes */
+@media (max-width: 768px) {
+  .message-container {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+  
+  .message-bubble {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+  
+  .structured-content {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ===== COMPREHENSIVE RESPONSIVE DESIGN ===== */
+
+/* Enhanced mobile-first responsive design */
+@media (max-width: 640px) {
+  html, body {
+    overflow: hidden;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+  }
+  
+  /* Ensure minimum touch targets */
+  button, a, input, textarea, select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent zoom on input focus for iOS */
+  input, textarea, select {
+    font-size: 16px;
+  }
+  
+  /* Improve scrolling on mobile */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Landscape mobile optimizations */
+  @media (orientation: landscape) {
+    .mobile-landscape-hidden {
+      display: none;
+    }
+  }
+}
+
+/* Enhanced responsive design for all screen sizes */
+@media (min-width: 320px) and (max-width: 480px) {
+  /* Small phones */
+  .xs\:text-2xs { font-size: 0.625rem; }
+  .xs\:p-1 { padding: 0.25rem; }
+  .xs\:gap-1 { gap: 0.25rem; }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Large phones and small tablets */
+  .sm\:text-sm { font-size: 0.875rem; }
+  .sm\:p-2 { padding: 0.5rem; }
+  .sm\:gap-2 { gap: 0.5rem; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablets */
+  .md\:text-base { font-size: 1rem; }
+  .md\:p-4 { padding: 1rem; }
+  .md\:gap-4 { gap: 1rem; }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  /* Small laptops */
+  .lg\:text-lg { font-size: 1.125rem; }
+  .lg\:p-6 { padding: 1.5rem; }
+  .lg\:gap-6 { gap: 1.5rem; }
+}
+
+@media (min-width: 1281px) and (max-width: 1536px) {
+  /* Large laptops */
+  .xl\:text-xl { font-size: 1.25rem; }
+  .xl\:p-8 { padding: 2rem; }
+  .xl\:gap-8 { gap: 2rem; }
+}
+
+@media (min-width: 1537px) {
+  /* Desktops and larger */
+  .desktop-xl\:text-2xl { font-size: 1.5rem; }
+  .desktop-xl\:p-10 { padding: 2.5rem; }
+  .desktop-xl\:gap-10 { gap: 2.5rem; }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Touch devices */
+  .touch\:scale-105:hover {
+    transform: scale(1.05);
+  }
+  
+  .touch\:bg-opacity-80:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Larger touch targets */
+  button, a, input, textarea, select {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Mouse device optimizations */
+@media (hover: hover) and (pointer: fine) {
+  /* Mouse devices */
+  .mouse\:hover\:scale-110:hover {
+    transform: scale(1.1);
+  }
+  
+  .mouse\:hover\:shadow-lg:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2) {
+  /* Retina displays */
+  .retina\:text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .retina\:border-2 {
+    border-width: 2px;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .dark\:bg-gray-900 {
+    background-color: #111827;
+  }
+  
+  .dark\:text-white {
+    color: #ffffff;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .motion-reduce\:animate-none {
+    animation: none;
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .print\:hidden {
+    display: none;
+  }
+  
+  .print\:text-black {
+    color: #000000;
+  }
+  
+  .print\:bg-white {
+    background-color: #ffffff;
+  }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* Focus indicators for better accessibility - disabled for input area */
+*:focus:not(textarea):not(input) {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Remove focus outline from textarea and input */
+textarea:focus, input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .high-contrast\:border-2 {
+    border-width: 2px;
+  }
+  
+  .high-contrast\:text-black {
+    color: #000000;
+  }
+  
+  .high-contrast\:bg-white {
+    background-color: #ffffff;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip links for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimize repaints */
+.optimize-repaints {
+  contain: layout style paint;
+}
+
+/* Optimize scrolling performance */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== DEPLOYMENT OPTIMIZATIONS ===== */
+
+/* Production-ready optimizations */
+@media (min-width: 1024px) {
+  /* Desktop optimizations */
+  .desktop\:hover\:scale-105:hover {
+    transform: scale(1.05);
+  }
+  
+  .desktop\:hover\:shadow-xl:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* CDN optimization classes */
+.cdn-optimized {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Security headers simulation */
+.secure-content {
+  content-security-policy: "default-src 'self'";
 }
 
 /* Enhanced text wrapping and overflow handling */
@@ -392,11 +746,76 @@ code {
   animation: codeGlow 2s ease-in-out infinite;
 }
 
-/* Ensure code blocks stand out from regular text */
-pre code {
+/* Enhanced structured content styling */
+.structured-content {
   font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
-  font-weight: 400;
   line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* ASCII art and diagrams */
+.ascii-art {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border: 1px solid #404040;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+/* Charts and data structures */
+.chart-content {
+  background: linear-gradient(135deg, #1e1e1e 0%, #2e2e2e 100%);
+  border: 1px solid #505050;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* Structured lists */
+.structured-list {
+  background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%);
+  border: 1px solid #454545;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* Enhanced text formatting */
+.clean-text {
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+}
+
+/* Remove excessive markdown symbols */
+.clean-text h1,
+.clean-text h2,
+.clean-text h3,
+.clean-text h4,
+.clean-text h5,
+.clean-text h6 {
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  color: #e5e5e5;
+}
+
+.clean-text strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.clean-text em {
+  font-style: italic;
+  color: #d1d5db;
+}
+
+.clean-text code {
+  background: #374151;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #f3f4f6;
 }
 
 /* Landscape mobile optimizations */

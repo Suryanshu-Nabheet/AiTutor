@@ -51,9 +51,9 @@ export function CodeBlock({ code, language = 'text' }: CodeBlockProps) {
         </div>
         
         {/* Enhanced code content area */}
-        <div className="relative bg-gray-950/95">
-          <div className="p-5 overflow-x-auto code-container">
-            <pre className="text-sm text-gray-100 font-mono leading-relaxed whitespace-pre">
+        <div className="relative bg-gray-950/95 max-w-full overflow-hidden">
+          <div className="p-5 overflow-x-auto code-container max-w-full">
+            <pre className="text-sm text-gray-100 font-mono leading-relaxed whitespace-pre-wrap break-words">
               <code className="block text-gray-200">{code}</code>
             </pre>
           </div>

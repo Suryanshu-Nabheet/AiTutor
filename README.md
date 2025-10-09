@@ -4,14 +4,65 @@ A modern, feature-rich AI-powered coding assistant built with React, TypeScript,
 
 ![AiTutor](https://img.shields.io/badge/AI-Powered-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue) ![React](https://img.shields.io/badge/React-18.3-blue) ![Vite](https://img.shields.io/badge/Vite-5.4-blue) ![Responsive](https://img.shields.io/badge/Responsive-Mobile%20First-green) ![Voice](https://img.shields.io/badge/Voice-Supported-purple)
 
-> **Live Demo**: [AiTutor App](https://aitutor.app) | **Built by**: Suryanshu Nabheet
+> **Live Demo**: [AiTutor App](https://aitutorx.vercel.app/) | **Built by**: Suryanshu Nabheet
 
 ---
 
+## 🎯 AI Response Structure
+
+### For Coding Questions:
+1. **Brief Professional Introduction** (1-2 sentences)
+2. **Complete Code Solution** (immediately in code block)
+3. **Detailed Explanation** (key concepts and logic)
+4. **Best Practices** (professional tips and recommendations)
+
+### For Academic Questions:
+1. **Clear Introduction** (simple, conversational)
+2. **Key Points** (bullet points or numbered lists)
+3. **Visual Elements** (ASCII art, charts, diagrams when helpful)
+4. **Practical Examples** (real-world applications)
+5. **Summary** (concise takeaways)
+
+**Clean Formatting Features:**
+- No excessive markdown symbols (#, !, **, &, ||, \, ---, ===, etc.)
+- No complex tables or overly formatted sections
+- Simple bullet points and numbered lists only
+- Clean, conversational responses
+- Professional but readable formatting
+- Text stays within message containers
+- Comprehensive automatic markdown symbol removal
+- Plain text responses only
+- Dual-layer protection (system prompt + post-processing)
+- Dedicated markdown cleaning utility
+
 ## 🚀 Features
 
+### 🎯 **100% Production Ready**
+- ✅ **Perfect Responsive Design** - Works flawlessly on all devices (320px - 2560px+)
+- ✅ **Professional UI/UX** - Modern, accessible, and intuitive interface
+- ✅ **Optimized Performance** - Fast loading, efficient rendering, minimal bundle size
+- ✅ **Security Hardened** - CSP headers, XSS protection, secure API integration
+- ✅ **Cross-Browser Compatible** - Works on all modern browsers with graceful degradation
+- ✅ **Accessibility Compliant** - ARIA labels, keyboard navigation, screen reader support
+
+### 📱 **Comprehensive Responsive Design**
+- **Small Phones** (320px-480px): Optimized touch targets, fluid typography
+- **Large Phones** (481px-768px): Enhanced spacing, better readability
+- **Tablets** (769px-1024px): Balanced layout, improved navigation
+- **Laptops** (1025px-1280px): Full feature set, hover interactions
+- **Desktops** (1281px-1536px): Maximum content width, enhanced spacing
+- **Large Displays** (1537px+): Ultra-wide support, optimized layouts
+
+### 🎨 **Advanced UI/UX Features**
+- **Glassmorphism Effects**: Modern frosted glass design elements
+- **Smooth Animations**: GPU-accelerated transitions and micro-interactions
+- **Dark Theme**: Professional dark mode with perfect contrast ratios
+- **Touch Optimization**: 44px+ touch targets, gesture support
+- **Safe Area Support**: iOS notch and Android navigation bar handling
+- **Fluid Typography**: Responsive font scaling across all devices
+
 ### Core Capabilities
-- **AI-Powered Responses**: Leverages Qwen 2.5 Coder (32B) via OpenRouter for intelligent coding assistance
+- **AI-Powered Responses**: Leverages OpenAI GPT-OSS-20B via OpenRouter for intelligent assistance
 - **Real-Time Typing Animation**: Smooth character-by-character display of AI responses
 - **Code Block Rendering**: Automatic syntax highlighting with copy-to-clipboard functionality
 - **Voice Integration**: Text-to-speech for AI responses and speech-to-text for input

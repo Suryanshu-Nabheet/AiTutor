@@ -10,30 +10,28 @@ interface CodeBlockProps {
 function highlightCode(code: string, language: string): string {
   if (language === 'html') {
     return code
-      .replace(/&lt;!DOCTYPE\s+html&gt;/gi, '<span class="text-blue-400 font-bold">&lt;!DOCTYPE html&gt;</span>')
-      .replace(/&lt;(\/?)(html|head|body|title|meta|link|script|style)&gt;/gi, '<span class="text-blue-300">&lt;$1$2&gt;</span>')
-      .replace(/&lt;(\/?)(h[1-6]|p|div|span|a|img|ul|ol|li|table|tr|td|th|form|input|button|textarea|select|option)&gt;/gi, '<span class="text-green-300">&lt;$1$2&gt;</span>')
-      .replace(/&lt;(\/?)(style|script)&gt;/gi, '<span class="text-purple-300">&lt;$1$2&gt;</span>')
-      .replace(/(\w+)=/g, '<span class="text-yellow-300">$1</span>=')
-      .replace(/"([^"]*)"/g, '<span class="text-orange-300">"$1"</span>')
-      .replace(/'([^']*)'/g, '<span class="text-orange-300">\'$1\'</span>');
+      .replace(/&lt;!DOCTYPE\s+html&gt;/gi, '<span class="text-purple-400">&lt;!DOCTYPE html&gt;</span>')
+      .replace(/&lt;(\/?)(html|head|body|title|meta|link|script|style)&gt;/gi, '<span class="text-blue-400">&lt;$1$2&gt;</span>')
+      .replace(/&lt;(\/?)(h[1-6]|p|div|span|a|img|ul|ol|li|table|tr|td|th|form|input|button|label)&gt;/gi, '<span class="text-green-400">&lt;$1$2&gt;</span>')
+      .replace(/&lt;(\/?)(strong|em|b|i|u|br|hr)&gt;/gi, '<span class="text-yellow-400">&lt;$1$2&gt;</span>')
+      .replace(/(\w+)=&quot;([^&quot;]*)&quot;/g, '<span class="text-orange-400">$1</span>=<span class="text-red-300">&quot;$2&quot;</span>')
+      .replace(/&lt;!--[\s\S]*?--&gt;/g, '<span class="text-gray-500">$&</span>');
   }
   
   if (language === 'css') {
     return code
-      .replace(/([.#]?[\w-]+)\s*\{/g, '<span class="text-blue-300">$1</span> {')
-      .replace(/(\w+):/g, '<span class="text-green-300">$1</span>:')
-      .replace(/(#[0-9a-fA-F]{3,6}|rgb\([^)]+\)|rgba\([^)]+\))/g, '<span class="text-pink-300">$1</span>')
-      .replace(/(\d+(?:px|em|rem|%|vh|vw)?)/g, '<span class="text-yellow-300">$1</span>');
+      .replace(/([.#]?[\w-]+)\s*\{/g, '<span class="text-blue-400">$1</span> {')
+      .replace(/(\w+):\s*([^;]+);/g, '<span class="text-green-400">$1</span>: <span class="text-yellow-300">$2</span>;')
+      .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-gray-500">$1</span>');
   }
   
   if (language === 'javascript' || language === 'js') {
     return code
-      .replace(/\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default)\b/g, '<span class="text-blue-400">$1</span>')
-      .replace(/\b(true|false|null|undefined)\b/g, '<span class="text-purple-300">$1</span>')
-      .replace(/"([^"]*)"/g, '<span class="text-green-300">"$1"</span>')
-      .replace(/'([^']*)'/g, '<span class="text-green-300">\'$1\'</span>')
-      .replace(/\b(\d+)\b/g, '<span class="text-yellow-300">$1</span>');
+      .replace(/\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default)\b/g, '<span class="text-purple-400">$1</span>')
+      .replace(/\b(true|false|null|undefined)\b/g, '<span class="text-blue-400">$1</span>')
+      .replace(/(["'`])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="text-green-400">$1$2$1</span>')
+      .replace(/(\/\/.*$)/gm, '<span class="text-gray-500">$1</span>')
+      .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-gray-500">$1</span>');
   }
   
   return code;
@@ -50,7 +48,7 @@ export function CodeBlock({ code, language = 'text' }: CodeBlockProps) {
     setDisplayedCode('');
     
     let currentIndex = 0;
-    const typingSpeed = 15; // Faster typing for code
+    const typingSpeed = 15; // Adjust speed as needed
     
     const interval = setInterval(() => {
       if (currentIndex < code.length) {
@@ -61,7 +59,7 @@ export function CodeBlock({ code, language = 'text' }: CodeBlockProps) {
         clearInterval(interval);
       }
     }, typingSpeed);
-    
+
     return () => clearInterval(interval);
   }, [code]);
 

@@ -8,6 +8,19 @@ export function cleanMarkdown(text: string): string {
 
   let cleaned = text;
 
+  // First, protect code blocks from cleaning
+  const codeBlockRegex = /```[\s\S]*?```/g;
+  const codeBlocks: string[] = [];
+  let match;
+  let index = 0;
+  
+  // Extract and protect code blocks
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    codeBlocks.push(match[0]);
+    cleaned = cleaned.replace(match[0], `__CODE_BLOCK_${index}__`);
+    index++;
+  }
+
   // Remove bold text (multiple patterns)
   cleaned = cleaned
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -20,7 +33,7 @@ export function cleanMarkdown(text: string): string {
     .replace(/\*(.*?)\*/g, '$1')
     .replace(/\*(.*?)\*/g, '$1');
 
-  // Remove inline code
+  // Remove inline code (but not code blocks)
   cleaned = cleaned
     .replace(/`(.*?)`/g, '$1')
     .replace(/`(.*?)`/g, '$1');
@@ -43,14 +56,19 @@ export function cleanMarkdown(text: string): string {
     .replace(/\*\s*/g, '- ')
     .replace(/\*\s*/g, '- ');
 
-  // Remove any remaining special characters
-  cleaned = cleaned.replace(/[#*`\\|]/g, '');
+  // Remove any remaining special characters (but not backticks in code blocks)
+  cleaned = cleaned.replace(/[#*\\|]/g, '');
 
   // Clean up extra spaces and newlines
   cleaned = cleaned
     .replace(/\n\s*\n\s*\n/g, '\n\n')
     .replace(/^\s+|\s+$/gm, '')
     .trim();
+
+  // Restore code blocks
+  codeBlocks.forEach((codeBlock, i) => {
+    cleaned = cleaned.replace(`__CODE_BLOCK_${i}__`, codeBlock);
+  });
 
   return cleaned;
 }

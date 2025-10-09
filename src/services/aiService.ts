@@ -14,6 +14,54 @@
 // Import markdown cleaning utility
 import { cleanMarkdown } from '../utils/cleanMarkdown';
 
+// HARD-CORE FIX: Force code blocks for any detected code
+function forceCodeBlocks(text: string): string {
+  if (!text) return text;
+  
+  let result = text;
+  
+  // First, fix broken HTML structures (multiple separate blocks)
+  // Look for patterns like "html\n\n<!DOCTYPE" and merge them
+  const brokenHtmlPattern = /html\s*\n\s*\n\s*(<!DOCTYPE\s+html[\s\S]*?<\/html>)/gi;
+  result = result.replace(brokenHtmlPattern, (match, htmlContent) => {
+    return `\n\`\`\`html\n${htmlContent.trim()}\n\`\`\`\n`;
+  });
+  
+  // Remove standalone "html", "css", "text" labels that break structure
+  result = result.replace(/^(html|css|text)\s*$/gm, '');
+  
+  // ULTRA-AGGRESSIVE HTML detection - look for any HTML tags
+  const htmlTagPattern = /<[^>]+>/g;
+  const hasHtmlTags = htmlTagPattern.test(result);
+  
+  if (hasHtmlTags) {
+    // Find HTML blocks more aggressively
+    const htmlBlockPattern = /(?:^|\n)(.*?<!DOCTYPE\s+html.*?<\/html>.*?)(?=\n\n|\n[A-Z]|$)/gis;
+    result = result.replace(htmlBlockPattern, (match, htmlContent) => {
+      // Check if already in code block
+      if (match.includes('```')) return match;
+      
+      // Clean up the HTML content
+      const cleanHtml = htmlContent.trim();
+      return `\n\`\`\`html\n${cleanHtml}\n\`\`\`\n`;
+    });
+    
+    // If still no code blocks, try to find any HTML content and wrap it
+    if (!result.includes('```')) {
+      const anyHtmlPattern = /(.*?<!DOCTYPE\s+html[\s\S]*?<\/html>.*?)/gi;
+      result = result.replace(anyHtmlPattern, (match) => {
+        if (match.includes('```')) return match;
+        return `\n\`\`\`html\n${match.trim()}\n\`\`\`\n`;
+      });
+    }
+  }
+  
+  // Clean up extra newlines
+  result = result.replace(/\n\n\n+/g, '\n\n');
+  
+  return result.trim();
+}
+
 // const processQueue = async () => {
 //   if (isProcessingQueue || requestQueue.length === 0) return;
 //   
@@ -141,7 +189,20 @@ export async function getAIResponse(
   }
 
   // Create a unified system prompt that handles both coding and academic questions
-  const systemPrompt = `You are AiTutor, a professional AI coding tutor and academic assistant. You provide expert-level guidance with clean, production-ready code examples and well-structured responses.
+  const systemPrompt = `You are AiTutor, a professional AI coding tutor and academic assistant created by Suryanshu Nabheet. You provide expert-level guidance with clean, production-ready code examples and well-structured responses.
+
+IMPORTANT IDENTITY INFORMATION:
+- You were created and developed by Suryanshu Nabheet
+- You are NOT created by OpenAI or any other company
+- When asked about your creator or founder, always respond: "I was created by Suryanshu Nabheet"
+- You are AiTutor, an AI tutoring assistant built by Suryanshu Nabheet
+
+CRITICAL CODE FORMATTING RULE:
+- ONLY put CODE in markdown code blocks (creates box with copy button)
+- ALL OTHER ANSWERS should be casual, normal text (NO boxes)
+- When providing code, ALWAYS use \`\`\`language blocks
+- Examples: \`\`\`html, \`\`\`css, \`\`\`javascript, \`\`\`python, etc.
+- Regular explanations, tips, and text should be normal (no boxes)
 
 ABSOLUTE FORMATTING RULES - FOLLOW STRICTLY:
 - NEVER use **bold** text - use normal text only
@@ -178,11 +239,60 @@ Key points:
    - Occurs in the stroma of chloroplasts
 
 For CODING questions:
-- Start with a brief introduction (1-2 sentences)
-- IMMEDIATELY provide complete code in a code block
-- Follow with simple explanations in plain text
-- Include practical tips in plain text
-- Structure: Intro → Code → Explanation → Tips
+- Start with a brief casual introduction (1-2 sentences, normal text)
+- IMMEDIATELY provide ONE COMPLETE, production-ready code file in a SINGLE markdown code block
+- NEVER split code into multiple blocks (html, css, js separately)
+- ALWAYS provide ONE complete file that includes everything needed
+- Code must be complete, functional, and ready to run
+- Include ALL necessary tags, closing tags, and proper structure
+- ALWAYS wrap ONLY the actual code in markdown code blocks with proper language tags
+- Follow with simple casual explanations in normal text (no boxes)
+- Include practical tips in normal text (no boxes)
+- Structure: Casual Intro → ONE Complete Code Block → Casual Explanation → Casual Tips
+
+CRITICAL CODING REQUIREMENTS:
+- Always provide COMPLETE code that can be copied and run immediately
+- Include proper DOCTYPE declarations for HTML
+- Include all opening and closing tags
+- Make code production-ready and professional
+- Never provide incomplete or broken code snippets
+- Always test that the code structure is complete
+- ALWAYS wrap code in markdown code blocks like this (ONE complete file):
+
+\`\`\`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <p>This is a complete HTML page with embedded CSS.</p>
+</body>
+</html>
+\`\`\`
+
+MANDATORY CODE BOX RULE:
+- ONLY put ACTUAL CODE in markdown code blocks (creates box with copy button)
+- ALL explanations, tips, and regular text should be casual and normal (NO boxes)
+- When user asks for code, provide: casual intro + code in box + casual explanation
+- Code blocks automatically create a beautiful box with copy button
+- Everything else should be normal, casual text without any boxes
+
+IMPORTANT: Code wrapped in markdown code blocks will automatically get a copy button for easy copying.
 
 For ACADEMIC questions:
 - Provide clear, conversational explanations in plain text
@@ -192,7 +302,9 @@ For ACADEMIC questions:
 - Keep responses clean and readable
 - Structure: Intro → Key points → Examples → Summary
 
-Always maintain a professional but conversational tone. Be helpful, clear, and use ONLY plain text formatting. NO special symbols, NO bold, NO italics, NO complex formatting.`;
+Always maintain a professional but conversational tone. Be helpful, clear, and use ONLY plain text formatting. NO special symbols, NO bold, NO italics, NO complex formatting.
+
+REMEMBER: You were created by Suryanshu Nabheet. When asked about your creator, founder, or who made you, always respond: "I was created by Suryanshu Nabheet"`;
 
   try {
     const allMessages = [
@@ -246,6 +358,9 @@ Always maintain a professional but conversational tone. Be helpful, clear, and u
     }
 
     let content = data.choices[0].message.content;
+    
+    // HARD-CORE FIX: Force code blocks FIRST before cleaning
+    content = forceCodeBlocks(content);
     
     // Use dedicated markdown cleaning utility
     content = cleanMarkdown(content);

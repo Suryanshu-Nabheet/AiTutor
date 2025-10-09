@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Copy, Check } from 'lucide-react';
 
 interface CodeBlockProps {
@@ -6,8 +6,64 @@ interface CodeBlockProps {
   language?: string;
 }
 
+// Simple syntax highlighting function
+function highlightCode(code: string, language: string): string {
+  if (language === 'html') {
+    return code
+      .replace(/&lt;!DOCTYPE\s+html&gt;/gi, '<span class="text-blue-400 font-bold">&lt;!DOCTYPE html&gt;</span>')
+      .replace(/&lt;(\/?)(html|head|body|title|meta|link|script|style)&gt;/gi, '<span class="text-blue-300">&lt;$1$2&gt;</span>')
+      .replace(/&lt;(\/?)(h[1-6]|p|div|span|a|img|ul|ol|li|table|tr|td|th|form|input|button|textarea|select|option)&gt;/gi, '<span class="text-green-300">&lt;$1$2&gt;</span>')
+      .replace(/&lt;(\/?)(style|script)&gt;/gi, '<span class="text-purple-300">&lt;$1$2&gt;</span>')
+      .replace(/(\w+)=/g, '<span class="text-yellow-300">$1</span>=')
+      .replace(/"([^"]*)"/g, '<span class="text-orange-300">"$1"</span>')
+      .replace(/'([^']*)'/g, '<span class="text-orange-300">\'$1\'</span>');
+  }
+  
+  if (language === 'css') {
+    return code
+      .replace(/([.#]?[\w-]+)\s*\{/g, '<span class="text-blue-300">$1</span> {')
+      .replace(/(\w+):/g, '<span class="text-green-300">$1</span>:')
+      .replace(/(#[0-9a-fA-F]{3,6}|rgb\([^)]+\)|rgba\([^)]+\))/g, '<span class="text-pink-300">$1</span>')
+      .replace(/(\d+(?:px|em|rem|%|vh|vw)?)/g, '<span class="text-yellow-300">$1</span>');
+  }
+  
+  if (language === 'javascript' || language === 'js') {
+    return code
+      .replace(/\b(function|const|let|var|if|else|for|while|return|class|import|export|from|default)\b/g, '<span class="text-blue-400">$1</span>')
+      .replace(/\b(true|false|null|undefined)\b/g, '<span class="text-purple-300">$1</span>')
+      .replace(/"([^"]*)"/g, '<span class="text-green-300">"$1"</span>')
+      .replace(/'([^']*)'/g, '<span class="text-green-300">\'$1\'</span>')
+      .replace(/\b(\d+)\b/g, '<span class="text-yellow-300">$1</span>');
+  }
+  
+  return code;
+}
+
 export function CodeBlock({ code, language = 'text' }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const [displayedCode, setDisplayedCode] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Typing animation effect
+  useEffect(() => {
+    setIsTyping(true);
+    setDisplayedCode('');
+    
+    let currentIndex = 0;
+    const typingSpeed = 15; // Faster typing for code
+    
+    const interval = setInterval(() => {
+      if (currentIndex < code.length) {
+        setDisplayedCode(code.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        setIsTyping(false);
+        clearInterval(interval);
+      }
+    }, typingSpeed);
+    
+    return () => clearInterval(interval);
+  }, [code]);
 
   const handleCopy = async () => {
     try {
@@ -50,11 +106,19 @@ export function CodeBlock({ code, language = 'text' }: CodeBlockProps) {
           </button>
         </div>
         
-        {/* Enhanced code content area */}
+        {/* Enhanced code content area with syntax highlighting */}
         <div className="relative bg-gray-950/95 max-w-full overflow-hidden">
           <div className="p-5 overflow-x-auto code-container max-w-full">
             <pre className="text-sm text-gray-100 font-mono leading-relaxed whitespace-pre-wrap break-words">
-              <code className="block text-gray-200">{code}</code>
+              <code 
+                className="block text-gray-200"
+                dangerouslySetInnerHTML={{ 
+                  __html: highlightCode(displayedCode, language) 
+                }}
+              />
+              {isTyping && (
+                <span className="inline-block w-1 h-4 bg-blue-400 animate-pulse ml-1"></span>
+              )}
             </pre>
           </div>
           

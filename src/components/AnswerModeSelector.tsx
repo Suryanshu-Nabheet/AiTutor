@@ -1,5 +1,5 @@
 import { AnswerMode } from '../types';
-import { FileText, BookOpen, Image } from 'lucide-react';
+import { FileText, BookOpen, Image, LucideIcon } from 'lucide-react';
 
 interface AnswerModeSelectorProps {
   selectedMode: AnswerMode;
@@ -7,7 +7,7 @@ interface AnswerModeSelectorProps {
 }
 
 export function AnswerModeSelector({ selectedMode, onModeChange }: AnswerModeSelectorProps) {
-  const modes: { value: AnswerMode; label: string; icon: any; description: string }[] = [
+  const modes: { value: AnswerMode; label: string; icon: LucideIcon; description: string }[] = [
     { value: 'short', label: 'Short', icon: FileText, description: 'Quick summary' },
     { value: 'detailed', label: 'Detailed', icon: BookOpen, description: 'In-depth explanation' },
     { value: 'visual', label: 'Visual', icon: Image, description: 'Diagram description' }

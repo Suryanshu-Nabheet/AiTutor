@@ -1,10 +1,40 @@
-const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+// Performance optimizations for millions of users
+const API_TIMEOUT = 30000; // 30 seconds timeout
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
 
-const ACADEMIC_API_KEY = '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';
-const ACADEMIC_MODEL = 'qwen/qwen-2.5-72b-instruct';
+// Rate limiting and caching
+const requestCache = new Map<string, { response: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-const CODING_API_KEY = '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';
-const CODING_MODEL = 'qwen/qwen-2.5-coder-32b-instruct';
+// Request queue for rate limiting
+const requestQueue: Array<() => Promise<any>> = [];
+let isProcessingQueue = false;
+
+const processQueue = async () => {
+  if (isProcessingQueue || requestQueue.length === 0) return;
+  
+  isProcessingQueue = true;
+  while (requestQueue.length > 0) {
+    const request = requestQueue.shift();
+    if (request) {
+      try {
+        await request();
+      } catch (error) {
+        console.error('Queue processing error:', error);
+      }
+    }
+    // Small delay between requests to prevent overwhelming the API
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  isProcessingQueue = false;
+};
+
+const API_URL = import.meta.env.VITE_OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
+const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+const MODEL = import.meta.env.VITE_OPENROUTER_MODEL || 'qwen/qwen3-coder:free';
+const APP_NAME = import.meta.env.VITE_APP_NAME || 'AiTutor';
+const APP_URL = import.meta.env.VITE_APP_URL || 'https://aitutor.app';
 
 const CODING_KEYWORDS = [
   'code', 'function', 'class', 'variable', 'javascript', 'typescript', 'python', 'java',
@@ -18,6 +48,16 @@ const CODING_KEYWORDS = [
   'build', 'create', 'develop', 'implement', 'programming', 'coding', 'software', 'dev',
   'node', 'express', 'angular', 'vue', 'django', 'flask', 'spring', 'php', 'ruby', 'go',
   'rust', 'c++', 'c#', 'swift', 'kotlin', 'android', 'ios', 'mobile', 'docker', 'kubernetes'
+];
+
+const ACADEMIC_KEYWORDS = [
+  'math', 'mathematics', 'algebra', 'geometry', 'calculus', 'statistics', 'physics',
+  'chemistry', 'biology', 'science', 'history', 'literature', 'philosophy', 'psychology',
+  'sociology', 'economics', 'politics', 'geography', 'art', 'music', 'language',
+  'grammar', 'writing', 'essay', 'research', 'study', 'learn', 'education', 'school',
+  'university', 'college', 'course', 'lesson', 'tutorial', 'explain', 'understand',
+  'concept', 'theory', 'principle', 'formula', 'equation', 'problem', 'solution',
+  'analysis', 'interpretation', 'definition', 'meaning', 'significance', 'importance'
 ];
 
 function isCodingQuestion(question: string): boolean {
@@ -44,11 +84,21 @@ function isCodingQuestion(question: string): boolean {
   return CODING_KEYWORDS.some(keyword => lowerQuestion.includes(keyword));
 }
 
+function isAcademicQuestion(question: string): boolean {
+  const lowerQuestion = question.toLowerCase();
+  return ACADEMIC_KEYWORDS.some(keyword => lowerQuestion.includes(keyword));
+}
+
 export function getModelInfo(question: string): { model: string; type: 'coding' | 'academic' } {
   const isCoding = isCodingQuestion(question);
+  const isAcademic = isAcademicQuestion(question);
+  
+  // Default to coding if it's clearly coding, otherwise academic
+  const questionType = isCoding ? 'coding' : 'academic';
+  
   return {
-    model: isCoding ? 'Qwen Coder' : 'Tongyi Research',
-    type: isCoding ? 'coding' : 'academic'
+    model: 'Qwen3 Coder',
+    type: questionType
   };
 }
 
@@ -56,14 +106,28 @@ export async function getAIResponse(
   question: string,
   conversationHistory: Array<{ role: string; content: string }>
 ): Promise<string> {
+  if (!API_KEY) {
+    throw new Error('OpenRouter API key is not configured. Please check your environment variables.');
+  }
+
   const isCoding = isCodingQuestion(question);
+  const isAcademic = isAcademicQuestion(question);
 
-  const apiKey = isCoding ? CODING_API_KEY : ACADEMIC_API_KEY;
-  const model = isCoding ? CODING_MODEL : ACADEMIC_MODEL;
+  // Create a unified system prompt that handles both coding and academic questions
+  const systemPrompt = `You are AiTutor, a helpful AI assistant powered by Qwen3 Coder. You excel at both coding and academic subjects.
 
-  const systemPrompt = isCoding
-    ? 'You are a helpful AI coding assistant. Provide clear, comprehensive answers with code examples when relevant. Format code blocks using markdown with language identifiers (e.g., ```javascript). Be precise and helpful.'
-    : 'You are a helpful AI tutor. Provide clear, comprehensive explanations on academic subjects including math, science, history, literature, and more. Break down complex concepts and use examples when helpful.';
+For coding questions:
+- Provide clear, comprehensive answers with code examples when relevant
+- Format code blocks using markdown with language identifiers (e.g., \`\`\`javascript)
+- Be precise and helpful with debugging, implementation, and best practices
+- Explain concepts clearly for learners
+
+For academic questions:
+- Provide clear, comprehensive explanations on subjects including math, science, history, literature, and more
+- Break down complex concepts and use examples when helpful
+- Use analogies and step-by-step explanations for better understanding
+
+Always be helpful, accurate, and educational in your responses.`;
 
   try {
     const allMessages = [
@@ -75,12 +139,12 @@ export async function getAIResponse(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': window.location.origin || 'https://aitutor.app',
-        'X-Title': 'AiTutor'
+        'Authorization': `Bearer ${API_KEY}`,
+        'HTTP-Referer': APP_URL,
+        'X-Title': APP_NAME
       },
       body: JSON.stringify({
-        model: model,
+        model: MODEL,
         messages: allMessages,
         temperature: 0.7,
         max_tokens: 2500,
@@ -93,6 +157,20 @@ export async function getAIResponse(
     if (!response.ok) {
       const errorText = await response.text();
       console.error('API Error Response:', errorText);
+      
+      // Handle specific error cases
+      if (response.status === 429) {
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.error?.metadata?.raw?.includes('rate-limited')) {
+            throw new Error('The free model is temporarily rate-limited. Please try again in a few minutes, or consider upgrading to a paid plan for better availability.');
+          }
+        } catch (parseError) {
+          // Fallback if JSON parsing fails
+        }
+        throw new Error('Rate limit exceeded. Please try again in a few minutes.');
+      }
+      
       throw new Error(`API Error: ${response.status} - ${errorText.substring(0, 100)}`);
     }
 
@@ -114,6 +192,9 @@ export async function getAIResponse(
       }
       if (error.message.includes('API Error: 5')) {
         throw new Error('Server error. Please try again later.');
+      }
+      if (error.message.includes('API key')) {
+        throw new Error('API key is invalid or expired. Please check your configuration.');
       }
       throw new Error(error.message);
     }

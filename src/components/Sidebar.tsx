@@ -1,4 +1,4 @@
-import { Plus, MessageSquare, Trash2, X, Menu, Search, MessageCircle } from 'lucide-react';  // Added MessageCircle import
+import { Plus, MessageSquare, Trash2, X, Menu, Search, MessageCircle, Edit2, Check, X as XIcon } from 'lucide-react';
 import { Conversation } from '../types';
 import { useState } from 'react';
 
@@ -8,6 +8,7 @@ interface SidebarProps {
   onSelectConversation: (id: string) => void;
   onNewConversation: () => void;
   onDeleteConversation: (id: string) => void;
+  onRenameConversation: (id: string, newTitle: string) => void;
 }
 
 export function Sidebar({
@@ -15,10 +16,13 @@ export function Sidebar({
   currentConversationId,
   onSelectConversation,
   onNewConversation,
-  onDeleteConversation
+  onDeleteConversation,
+  onRenameConversation
 }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');  // Local state for search filtering
+  const [searchTerm, setSearchTerm] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
 
   const filteredConversations = conversations.filter(conv =>
     conv.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -30,6 +34,24 @@ export function Sidebar({
 
   const clearSearch = () => {
     setSearchTerm('');
+  };
+
+  const handleRename = (id: string, currentTitle: string) => {
+    setEditingId(id);
+    setEditTitle(currentTitle);
+  };
+
+  const handleSaveRename = () => {
+    if (editingId && editTitle.trim()) {
+      onRenameConversation(editingId, editTitle.trim());
+      setEditingId(null);
+      setEditTitle('');
+    }
+  };
+
+  const handleCancelRename = () => {
+    setEditingId(null);
+    setEditTitle('');
   };
 
   const SidebarContent = () => (
@@ -118,19 +140,68 @@ export function Sidebar({
                     : 'text-gray-400 group-hover:text-gray-300'
                 }`} />
               </div>
-              <span className="flex-1 text-xs sm:text-sm text-gray-200 truncate font-medium">
-                {conv.title}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteConversation(conv.id);
-                }}
-                className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-500/20 rounded-lg transition-all duration-200 flex-shrink-0 touch-manipulation hover:scale-110 active:scale-95"
-                aria-label="Delete conversation"
-              >
-                <Trash2 size={14} className="text-red-400" />
-              </button>
+              {editingId === conv.id ? (
+                <div className="flex-1 flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveRename();
+                      if (e.key === 'Escape') handleCancelRename();
+                    }}
+                    className="flex-1 text-xs sm:text-sm text-gray-200 bg-gray-800/50 border border-gray-600 rounded-lg px-2 py-1 focus:outline-none focus:border-blue-500"
+                    autoFocus
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSaveRename();
+                    }}
+                    className="p-1 hover:bg-green-500/20 rounded transition-colors"
+                  >
+                    <Check size={12} className="text-green-400" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCancelRename();
+                    }}
+                    className="p-1 hover:bg-red-500/20 rounded transition-colors"
+                  >
+                    <XIcon size={12} className="text-red-400" />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <span className="flex-1 text-xs sm:text-sm text-gray-200 truncate font-medium">
+                    {conv.title}
+                  </span>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRename(conv.id, conv.title);
+                      }}
+                      className="p-1.5 hover:bg-blue-500/20 rounded-lg transition-all duration-200 flex-shrink-0 touch-manipulation hover:scale-110 active:scale-95"
+                      aria-label="Rename conversation"
+                    >
+                      <Edit2 size={14} className="text-blue-400" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteConversation(conv.id);
+                      }}
+                      className="p-1.5 hover:bg-red-500/20 rounded-lg transition-all duration-200 flex-shrink-0 touch-manipulation hover:scale-110 active:scale-95"
+                      aria-label="Delete conversation"
+                    >
+                      <Trash2 size={14} className="text-red-400" />
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))
         )}
@@ -154,13 +225,13 @@ export function Sidebar({
     <>
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 sm:p-3 bg-black/80 backdrop-blur-xl border border-gray-800 rounded-xl shadow-2xl hover:bg-gray-900 transition-all duration-300 touch-manipulation"
+        className="lg:hidden fixed top-3 xs:top-4 left-3 xs:left-4 z-50 p-3 sm:p-3.5 bg-black/80 backdrop-blur-xl border border-gray-800 rounded-xl shadow-2xl hover:bg-gray-900 transition-all duration-300 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
         aria-label="Open menu"
       >
-        <Menu size={18} className="text-gray-300" />
+        <Menu size={20} className="text-gray-300" />
       </button>
 
-      <div className="hidden lg:flex lg:w-64 xl:w-72 bg-black/40 backdrop-blur-xl border-r border-gray-800/50 flex flex-col h-full">  {/* Reduced widths: lg:w-64 xl:w-72 for smaller sidebar */}
+      <div className="hidden lg:flex lg:w-64 xl:w-72 2xl:w-80 bg-black/40 backdrop-blur-xl border-r border-gray-800/50 flex-col h-full">
         <SidebarContent />
       </div>
 
@@ -173,7 +244,7 @@ export function Sidebar({
               clearSearch();
             }}
           />
-          <div className="lg:hidden fixed inset-y-0 left-0 w-[80vw] max-w-xs sm:max-w-sm bg-black/95 backdrop-blur-2xl border-r border-gray-800 z-50 flex flex-col animate-slide-in shadow-2xl">
+          <div className="lg:hidden fixed inset-y-0 left-0 w-[85vw] xs:w-[80vw] sm:w-[75vw] max-w-xs sm:max-w-sm md:max-w-md bg-black/95 backdrop-blur-2xl border-r border-gray-800 z-50 flex flex-col animate-slide-in shadow-2xl">
             {/* Mobile Header: Larger, bold for premium branding */}
             <div className="flex items-center justify-between p-4 border-b border-gray-800/50">
               <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400">AiTutor</h2>  {/* Larger gradient text, no subtitle */}

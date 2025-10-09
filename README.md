@@ -2,7 +2,9 @@
 
 A modern, feature-rich AI-powered coding assistant built with React, TypeScript, and Vite. Experience fast, intelligent responses powered by Qwen 2.5 Coder through OpenRouter.
 
-![AiTutor](https://img.shields.io/badge/AI-Powered-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue) ![React](https://img.shields.io/badge/React-18.3-blue) ![Vite](https://img.shields.io/badge/Vite-5.4-blue)
+![AiTutor](https://img.shields.io/badge/AI-Powered-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue) ![React](https://img.shields.io/badge/React-18.3-blue) ![Vite](https://img.shields.io/badge/Vite-5.4-blue) ![Responsive](https://img.shields.io/badge/Responsive-Mobile%20First-green) ![Voice](https://img.shields.io/badge/Voice-Supported-purple)
+
+> **Live Demo**: [AiTutor App](https://aitutor.app) | **Built by**: Suryanshu Nabheet
 
 ---
 
@@ -18,9 +20,11 @@ A modern, feature-rich AI-powered coding assistant built with React, TypeScript,
 
 ### User Experience
 - **Beautiful UI**: Modern, glassmorphic design with smooth animations
-- **Responsive Design**: Optimized for mobile, tablet, and desktop devices
+- **Fully Responsive**: Mobile-first design optimized for phones, tablets, and desktops
 - **Dark Theme**: Easy on the eyes with a professional dark interface
 - **Fast Performance**: Optimized with Vite for lightning-fast development and build times
+- **Touch-Friendly**: Optimized touch interactions for mobile devices
+- **Accessibility**: Keyboard navigation and screen reader support
 
 ---
 
@@ -32,19 +36,60 @@ A modern, feature-rich AI-powered coding assistant built with React, TypeScript,
 - **Vite 5.4**: Next-generation frontend tooling
 
 ### Styling & UI
-- **Tailwind CSS 3.4**: Utility-first CSS framework
+- **Tailwind CSS 3.4**: Utility-first CSS framework with responsive utilities
 - **Lucide React**: Beautiful, consistent icon library
 - **Custom Glassmorphism**: Modern glass-effect UI components
+- **Mobile-First Design**: Responsive breakpoints for all device sizes
+- **Custom Animations**: Smooth transitions and micro-interactions
 
 ### AI Integration
-- **OpenRouter API**: Access to Qwen 2.5 Coder model
-- **Streaming Support**: Real-time response generation
+- **OpenRouter API**: Access to Qwen3 Coder model (free tier available)
+- **Single API Endpoint**: Unified service for both coding and academic questions
+- **Environment Configuration**: Secure API key management
 - **Context Management**: Intelligent conversation history handling
 
 ### Additional Features
 - **Local Storage API**: Client-side data persistence
 - **Web Speech API**: Voice recognition and synthesis
 - **Markdown Parsing**: Code block extraction and rendering
+
+---
+
+## 📱 Device Compatibility
+
+### Supported Devices
+- **📱 Mobile Phones**: iPhone (iOS 12+), Android (Android 8+)
+- **📱 Tablets**: iPad (iOS 12+), Android tablets (Android 8+)
+- **💻 Laptops**: Windows, macOS, Linux (Chrome, Firefox, Safari, Edge)
+- **🖥️ Desktops**: All modern browsers with responsive scaling
+
+### Responsive Breakpoints
+- **Mobile**: 320px - 768px (sm)
+- **Tablet**: 768px - 1024px (md)
+- **Laptop**: 1024px - 1280px (lg)
+- **Desktop**: 1280px+ (xl)
+
+### Touch Optimizations
+- **Touch Targets**: Minimum 44px touch targets for mobile
+- **Swipe Gestures**: Smooth scrolling and navigation
+- **Haptic Feedback**: Native mobile interactions
+- **Viewport Meta**: Proper mobile viewport configuration
+
+---
+
+## 🆓 Free AI Model
+
+AiTutor uses **OpenAI GPT-OSS-20B** through OpenRouter's free tier, providing:
+
+- **No Cost**: Completely free to use
+- **High Quality**: Advanced coding and academic assistance
+- **Easy Setup**: Simple API key configuration
+- **Multiple Options**: Alternative free models available
+- **Upgrade Path**: Easy transition to paid models for better reliability
+
+**Note**: Free models may experience occasional rate limiting. Alternative free models are available as fallbacks.
+
+**Get Started**: Visit [OpenRouter](https://openrouter.ai/keys) to get your free API key in seconds!
 
 ---
 
@@ -69,7 +114,19 @@ A modern, feature-rich AI-powered coding assistant built with React, TypeScript,
 
 3. **Environment Configuration**
 
-   The OpenRouter API key is pre-configured in the application. No additional setup required.
+   Create a `.env` file in the root directory with your OpenRouter API key:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Then edit `.env` and add your API key:
+   ```env
+   VITE_OPENROUTER_API_KEY=your_openrouter_api_key_here
+   VITE_OPENROUTER_API_URL=https://openrouter.ai/api/v1/chat/completions
+   VITE_OPENROUTER_MODEL=openai/gpt-oss-20b:free
+   ```
+   
+   **Get your free API key**: Visit [OpenRouter](https://openrouter.ai/keys) to get your API key.
 
 4. **Start development server**
    ```bash
@@ -115,15 +172,49 @@ A modern, feature-rich AI-powered coding assistant built with React, TypeScript,
 ## 🔧 Configuration
 
 ### API Configuration
-The application uses OpenRouter to access the Qwen 2.5 Coder model. The API configuration is located in:
+The application uses OpenRouter to access the OpenAI GPT-OSS-20B model. Configuration is managed through environment variables:
+
+**Environment Variables:**
+- `VITE_OPENROUTER_API_KEY`: Your OpenRouter API key (required)
+- `VITE_OPENROUTER_API_URL`: API endpoint (default: https://openrouter.ai/api/v1/chat/completions)
+- `VITE_OPENROUTER_MODEL`: Model to use (default: openai/gpt-oss-20b:free)
+- `VITE_APP_NAME`: Application name for API headers
+- `VITE_APP_URL`: Application URL for API headers
+
+**API Service Location:**
 ```
 src/services/aiService.ts
 ```
 
 ### Customization Options
 - **Typing Speed**: Adjust in `src/components/MessageBubble.tsx` (default: 10ms per character)
-- **Max Tokens**: Configure in `src/services/aiService.ts` (default: 2000)
+- **Max Tokens**: Configure in `src/services/aiService.ts` (default: 2500)
 - **Conversation History**: Limit set to 10 messages in `src/services/aiService.ts`
+- **Model Selection**: Change `VITE_OPENROUTER_MODEL` in `.env` file
+
+### Available Models
+
+**Free Models (may have rate limits):**
+- `openai/gpt-oss-20b:free` - Default, high-quality OpenAI model
+- `qwen/qwen3-coder:free` - Excellent for coding and academic questions
+- `microsoft/phi-3-mini-128k-instruct:free` - Alternative free model
+- `meta-llama/llama-3.2-3b-instruct:free` - Another free alternative
+
+**Paid Models (more reliable):**
+- `qwen/qwen-2.5-coder-32b-instruct` - High-quality coding model
+- `openai/gpt-4o-mini` - Fast and reliable general-purpose model
+- `anthropic/claude-3.5-sonnet` - Excellent for complex reasoning
+
+**To switch models:** 
+- **Manual**: Update `VITE_OPENROUTER_MODEL` in your `.env` file and restart the development server
+- **Script**: Use the provided script: `./switch-model.sh [model-name]`
+  ```bash
+  # List available models
+  ./switch-model.sh
+  
+  # Switch to a specific model
+  ./switch-model.sh openai/gpt-oss-20b:free
+  ```
 
 ---
 
@@ -179,15 +270,26 @@ project/
 ## 🚀 Performance Optimization
 
 ### Build Optimizations
-- **Code Splitting**: Automatic route-based code splitting
+- **Code Splitting**: Automatic chunking (vendor, icons, app chunks)
 - **Tree Shaking**: Removes unused code from bundles
-- **Minification**: Production builds are fully minified
+- **Minification**: Terser minification with console removal
 - **Asset Optimization**: Images and fonts are optimized
+- **Bundle Analysis**: Optimized for production deployment
 
 ### Runtime Optimizations
 - **React Memoization**: Prevents unnecessary re-renders
 - **Lazy Loading**: Components loaded on demand
 - **Debouncing**: Input handlers are debounced for better performance
+- **Request Queuing**: Rate limiting and deduplication for API calls
+- **Error Recovery**: Automatic retry with exponential backoff
+- **Caching**: Smart response caching for better performance
+
+### Production Ready Features
+- **CDN Optimized**: Ready for Vercel's global CDN
+- **Mobile Performance**: Touch-optimized scrolling and interactions
+- **Security Headers**: XSS protection, content type options
+- **Error Handling**: Comprehensive error recovery system
+- **Scalability**: Built to handle millions of users
 
 ---
 
@@ -248,11 +350,12 @@ This project is licensed under the MIT License. See LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
-- **OpenRouter**: For providing access to advanced AI models
-- **Qwen Team**: For the powerful Qwen 2.5 Coder model
+- **OpenRouter**: For providing access to advanced AI models with free tier
+- **OpenAI**: For the powerful GPT-OSS-20B model (free tier available)
 - **React Team**: For the amazing React framework
 - **Tailwind Labs**: For Tailwind CSS
 - **Lucide**: For beautiful icons
+- **Vite Team**: For the lightning-fast build tool
 
 ---
 
@@ -264,8 +367,64 @@ For issues, questions, or suggestions:
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**Voice not working?**
+- Ensure microphone permissions are granted
+- Check browser compatibility (Chrome/Firefox recommended)
+- Try refreshing the page
+
+**Responsive layout issues?**
+- Clear browser cache
+- Check viewport meta tag
+- Ensure JavaScript is enabled
+
+**AI responses slow?**
+- Check internet connection
+- API service may be experiencing high load
+- Try refreshing the page
+
+**API key issues?**
+- Ensure `.env` file exists in project root
+- Verify `VITE_OPENROUTER_API_KEY` is set correctly
+- Check if API key is valid at [OpenRouter](https://openrouter.ai/keys)
+- Restart development server after changing `.env`
+
+**Rate limiting issues?**
+- Free models may be temporarily rate-limited
+- Try again in a few minutes
+- Consider switching to alternative free models in `.env`:
+  - `qwen/qwen3-coder:free`
+  - `microsoft/phi-3-mini-128k-instruct:free`
+  - `meta-llama/llama-3.2-3b-instruct:free`
+- For better reliability, upgrade to paid models
+
+**No AI responses?**
+- Check browser console for error messages
+- Verify API key has sufficient credits
+- Ensure model is available and not rate-limited
+
+**Mobile keyboard issues?**
+- Ensure viewport height is properly configured
+- Check for iOS Safari specific issues
+- Try landscape orientation
+
+### Browser Support
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+- ⚠️ Internet Explorer: Not supported
+
+---
+
 ## 🔮 Future Enhancements
 
+- [x] **Mobile-First Responsive Design** - Completed
+- [x] **Touch-Optimized Interface** - Completed
+- [x] **Voice Integration** - Completed
 - [ ] Theme customization (light/dark/custom)
 - [ ] Export conversations to PDF/Markdown
 - [ ] Code execution environment
@@ -273,6 +432,8 @@ For issues, questions, or suggestions:
 - [ ] Plugin system for extensions
 - [ ] Collaborative chat sessions
 - [ ] Advanced code analysis tools
+- [ ] Progressive Web App (PWA) support
+- [ ] Offline mode with service workers
 
 ---
 

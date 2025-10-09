@@ -1,17 +1,35 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "aitutor",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "AiTutor - Advanced AI-powered tutoring chatbot with voice support and code generation",
+  "keywords": [
+    "ai",
+    "chatbot",
+    "tutor",
+    "education",
+    "code",
+    "voice",
+    "react",
+    "typescript"
+  ],
+  "author": "Suryanshu Nabheet",
+  "license": "MIT",
+  "homepage": "https://aitutor.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suryanshunabheet/aitutor"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "deploy": "npm run build && vercel --prod"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.4",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -28,8 +46,13 @@
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
+    "terser": "^5.44.0",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
     "vite": "^5.4.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

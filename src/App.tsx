@@ -57,6 +57,18 @@ function App() {
     }
   };
 
+  const handleRenameConversation = (id: string, newTitle: string) => {
+    const updatedConversations = conversations.map(conv => 
+      conv.id === id ? { ...conv, title: newTitle, updatedAt: Date.now() } : conv
+    );
+    setConversations(updatedConversations);
+    StorageService.saveConversations(updatedConversations);
+    
+    if (currentConversation?.id === id) {
+      setCurrentConversation({ ...currentConversation, title: newTitle, updatedAt: Date.now() });
+    }
+  };
+
   const handleSendMessage = async (messageText: string) => {
     try {
       setIsLoading(true);
@@ -136,18 +148,19 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-black text-white overflow-hidden">
+    <div className="flex h-screen bg-black text-white overflow-hidden max-w-full">
       <Sidebar
         conversations={conversations}
         currentConversationId={currentConversation?.id || null}
         onSelectConversation={handleSelectConversation}
         onNewConversation={handleNewConversation}
         onDeleteConversation={handleDeleteConversation}
+        onRenameConversation={handleRenameConversation}
       />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative max-w-full overflow-hidden">
         {/* ChatArea: flex-1 for full height, no extra wrappers */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden max-w-full">
           <ChatArea
             messages={currentConversation?.messages || []}
             isLoading={isLoading}
@@ -157,9 +170,9 @@ function App() {
           />
         </div>
 
-        {/* InputArea wrapper: No border-t/line, minimal padding, no bg for seamless merge */}
-        <div className="p-2 sm:p-3">  {/* Removed border-t border-gray-800/50 and bg-black/40 backdrop-blur-xl: no line/gap */}
-          <div className="max-w-3xl mx-auto">
+        {/* InputArea wrapper: Responsive padding and safe area handling */}
+        <div className="p-2 xs:p-3 sm:p-4 md:p-6 lg:p-8 safe-area-inset-bottom max-w-full">
+          <div className="max-w-3xl xl:max-w-4xl mx-auto w-full">
             <InputArea
               onSendMessage={handleSendMessage}
               onStartListening={handleStartListening}

@@ -106,13 +106,13 @@ export function MessageBubble({ message, onSpeak, isSpeaking, onStopSpeaking }: 
                     {message.modelType === 'coding' ? (
                       <>
                         <Code2 size={10} className="xs:w-3 xs:h-3" />
-                        <span className="hidden xs:inline">Qwen3 Coder</span>
+                        <span className="hidden xs:inline">AiTutor</span>
                         <span className="xs:hidden">Code</span>
                       </>
                     ) : (
                       <>
                         <GraduationCap size={10} className="xs:w-3 xs:h-3" />
-                        <span className="hidden xs:inline">Academic</span>
+                        <span className="hidden xs:inline">AiTutor</span>
                         <span className="xs:hidden">Academic</span>
                       </>
                     )}

@@ -353,16 +353,50 @@ code {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Mobile-specific improvements */
-@media (max-width: 640px) {
-  .break-words {
-    word-break: break-all;
-  }
-  
-  pre, code {
-    font-size: 12px;
-    line-height: 1.4;
-  }
+/* Enhanced code block styling for better prominence */
+.code-container {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  border-radius: 8px;
+}
+
+/* Make code blocks more prominent */
+.code-block-wrapper {
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+/* Enhanced code block shadows and effects */
+.code-block-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+  border-radius: 12px;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+/* Professional code block animations */
+@keyframes codeGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); }
+}
+
+.code-block-wrapper:hover {
+  animation: codeGlow 2s ease-in-out infinite;
+}
+
+/* Ensure code blocks stand out from regular text */
+pre code {
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 /* Landscape mobile optimizations */

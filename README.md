@@ -420,6 +420,34 @@ For issues, questions, or suggestions:
 
 ---
 
+## 📚 Additional Documentation
+
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to AiTutor
+- **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines and standards
+- **[Deployment Guide](DEPLOYMENT.md)** - Complete deployment instructions
+- **[License](LICENSE)** - MIT License details
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:
+
+- Report bugs and request features
+- Set up the development environment
+- Submit pull requests
+- Follow our code standards
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/suryanshunabheet/aitutor/issues)
+- **Discussions**: [Community discussions](https://github.com/suryanshunabheet/aitutor/discussions)
+- **Email**: Contact the maintainer for direct support
+
+---
+
 ## 🔮 Future Enhancements
 
 - [x] **Mobile-First Responsive Design** - Completed

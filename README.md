@@ -4,7 +4,7 @@ A modern, feature-rich AI-powered coding assistant built with React, TypeScript,
 
 ![AiTutor](https://img.shields.io/badge/AI-Powered-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue) ![React](https://img.shields.io/badge/React-18.3-blue) ![Vite](https://img.shields.io/badge/Vite-5.4-blue) ![Responsive](https://img.shields.io/badge/Responsive-Mobile%20First-green) ![Voice](https://img.shields.io/badge/Voice-Supported-purple)
 
-> **Live Demo**: [AiTutor App](https://aitutorx.vercel.app/) | **Built by**: Suryanshu Nabheet
+ **Built by**: Suryanshu Nabheet
 
 ---
 
